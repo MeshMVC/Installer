@@ -2,7 +2,25 @@
 
 set -e
 
-echo "Thank you for installing MeshMVC!"
+echo "Welcome to MeshMVC installer!"
+
+echo "Please enter install location"
+
+# Prompt the user for a directory name
+read -p "Enter directory name (default: current directory): " dirname
+
+# Check if the dirname is not empty
+if [[ -n "$dirname" ]]; then
+    # Create the directory
+    mkdir "$dirname" &> /dev/null
+
+    # Change to the newly created directory
+    cd "$dirname" &> /dev/null
+
+    echo "Installing to: ($dirname) ..."
+else
+    echo "Installing to current directory..."
+fi
 
 echo "Verifying dependencies..."
 
@@ -112,7 +130,7 @@ tar -xf MeshMVC-latest.tar --strip-components=1 &> /dev/null
 rm MeshMVC-latest.tar
 
 echo "Running server with docker..."
-docker compose up -d &> /dev/null
+docker compose up -d
 
 echo "Ready!"
 echo "-> To stop the server, please run the command 'docker compose down'."
