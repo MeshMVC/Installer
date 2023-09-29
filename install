@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+echo "Thank you for installing MeshMVC!"
+
+echo "Verifying dependencies..."
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+    echo "jq is not installed. Installing jq..."
+    
+    # Check if the package manager is apt-get (Linux)
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y jq
+    # Check if the package manager is yum (Linux)
+    elif command -v yum &> /dev/null; then
+        sudo yum update
+        sudo yum install -y jq
+    # Check if the package manager is dnf (Linux)
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install -y jq
+    # Check if the package manager is pacman (Linux)
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -Sy jq
+    # Check if Homebrew package manager is available (macOS)
+    elif command -v brew &> /dev/null; then
+        brew install jq
+    else
+        echo "Unable to install jq. Please install jq manually and re-run this script."
+        exit 1
+    fi
+fi
+
+echo "Downloading MeshMVC..."
+
+curl -sL $(curl -sL https://api.github.com/repos/MeshMVC/MeshMVC/tags | jq -r '.[0].tarball_url') -o MeshMVC-latest.tar
+
+echo "Extracting MeshMVC..."
+tar -xf MeshMVC-latest.tar --strip-components=1 &> /dev/null
+rm MeshMVC-latest.tar
+
+echo "Running server with docker..."
+docker compose up -d &> /dev/null
+
+echo "Ready!"
+echo "-> To stop the server, please run the command 'docker compose down'."
