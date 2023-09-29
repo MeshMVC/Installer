@@ -1,0 +1,67 @@
+Write-Host "Welcome to MeshMVC installer!"
+
+Write-Host "Please enter install location"
+
+# Prompt the user for a directory name
+$dirname = Read-Host "Enter directory name (default: current directory)"
+
+# Check if the dirname is not empty
+if (![string]::IsNullOrEmpty($dirname)) {
+    # Create the directory
+    New-Item -ItemType Directory -Path $dirname | Out-Null
+
+    # Change to the newly created directory
+    Set-Location -Path $dirname | Out-Null
+
+    Write-Host "Installing to: ($dirname) ..."
+}
+else {
+    Write-Host "Installing to current directory..."
+}
+
+Write-Host "Verifying dependencies..."
+
+# Check if Docker is installed
+if (-not (Test-Path "C:\Program Files\Docker\Docker\docker.exe")) {
+    Write-Host "Docker is not installed. Installing Docker..."
+
+    # Download Docker Desktop installer
+    $dockerInstallerUrl = "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
+    $dockerInstallerPath = "$env:TEMP\Docker Desktop Installer.exe"
+    Invoke-WebRequest -Uri $dockerInstallerUrl -OutFile $dockerInstallerPath
+
+    # Install Docker Desktop
+    Start-Process -Wait -FilePath $dockerInstallerPath
+
+    # Clean up the installer file
+    Remove-Item -Path $dockerInstallerPath
+
+    Write-Host "Docker installation completed."
+}
+else {
+    Write-Host "Docker is already installed."
+}
+
+Write-Host "Downloading MeshMVC..."
+
+# Retrieve the latest release tag from the GitHub API
+$apiUrl = "https://api.github.com/repos/MeshMVC/MeshMVC/tags"
+$latestTag = (Invoke-RestMethod -Uri $apiUrl | Select-Object -First 1).name
+# Construct the download URL for the latest release
+$downloadUrl = "https://github.com/MeshMVC/MeshMVC/tarball/$latestTag"
+# Download the latest release tarball
+Invoke-WebRequest -Uri $downloadUrl -OutFile "MeshMVC-latest.tar"
+
+
+Write-Host "Extracting MeshMVC..."
+
+# Extract the contents of the tar file
+tar -xf MeshMVC-latest.tar --strip-components=1 > $null
+# Remove the tar file
+Remove-Item -Path "MeshMVC-latest.tar"
+
+Write-Host "Running server with docker..."
+docker compose up -d
+
+Write-Host "Ready!"
+Write-Host "-> To stop the server, please run the command 'docker compose down'."
