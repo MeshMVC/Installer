@@ -12,21 +12,21 @@ read -p "Enter directory name (default: MeshMVC): " -r dirname </dev/tty
 
 # Check if the dirname is not empty
 if [[ -n "$dirname" ]]; then
-    trimmed="${$dirname#"${$dirname%%[![:space:]]*}"}"
+    trimmed="${dirname#"${dirname%%[![:space:]]*}"}"
     if trimmed==""; then
       echo "Installing to current directory..."
-      dirname = "."
+      dirname="."
     else
       echo "Installing to: ($dirname) ..."
     fi
 else
     echo "Installing to MeshMVC..."
-    dirname = "MeshMVC"
+    dirname="MeshMVC"
 fi
 
 # Create the directory and change to the newly created directory
 mkdir "$dirname" &> /dev/null || true
-cd "$dirname" &> /dev/null
+cd "$dirname"
 
 echo "Verifying dependencies..."
 
