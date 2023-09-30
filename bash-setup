@@ -21,10 +21,11 @@ if [[ -n "$dirname" ]]; then
     fi
 else
     echo "Installing to MeshMVC..."
+    dirname = "MeshMVC"
 fi
 
 # Create the directory and change to the newly created directory
-mkdir "$dirname" || true &> /dev/null
+mkdir "$dirname" &> /dev/null || true
 cd "$dirname" &> /dev/null
 
 echo "Verifying dependencies..."
@@ -126,6 +127,8 @@ if ! command -v docker-compose &> /dev/null; then
     fi
 fi
 
+# Check if Docker can be run
+docker_run_status=$(docker run hello-world 2>&1)
 if [[ $docker_run_status == "permission denied" ]]; then
   echo "Ensuring filesystem can read docker files..."
   sudo chmod 666 /var/run/docker.sock &> /dev/null
