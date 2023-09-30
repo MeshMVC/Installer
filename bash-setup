@@ -24,7 +24,7 @@ else
 fi
 
 # Create the directory and change to the newly created directory
-mkdir "$dirname" &> /dev/null
+mkdir "$dirname" || true &> /dev/null
 cd "$dirname" &> /dev/null
 
 echo "Verifying dependencies..."
