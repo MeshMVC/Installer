@@ -149,4 +149,5 @@ echo "Running server with docker..."
 docker compose up -d
 
 echo "Ready!"
-echo "-> To stop the server, please run the command 'docker compose down'."
+echo "-> To stop the server, please run the command 'docker compose down' inside your project directory."
+echo "-> Don't forget your project is within $dirname."
