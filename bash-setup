@@ -163,6 +163,9 @@ if [[ $docker_run_status == *"port is already alloc"* ]]; then
     docker kill $(docker ps -q)
   fi
 
+  echo "Restarting containers..."
+  docker compose up -d
+
 fi
 
 echo "Ready!"
