@@ -145,8 +145,8 @@ tar -xf MeshMVC-latest.tar --strip-components=1 &> /dev/null
 rm MeshMVC-latest.tar
 
 echo "Running server with docker..."
-docker_run_status=$(docker compose up -d 2>&1)
-if [[ $docker_run_status == *"port is already alloc"* ]]; then
+if docker ps | grep ":80-" > /dev/null; then
+
   echo "An app is already using port 80..."
 
   shopt -s nocasematch
