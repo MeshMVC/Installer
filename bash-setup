@@ -8,20 +8,24 @@ echo "Please enter install location"
 echo "Press [space] and [enter] to install in current directory"
 
 # Prompt the user for a directory name
-read -p "Enter directory name (default: MeshMVC): " -r dirname
+read -p "Enter directory name (default: MeshMVC): " -r dirname </dev/tty
 
 # Check if the dirname is not empty
 if [[ -n "$dirname" ]]; then
-    # Create the directory
-    mkdir "$dirname" &> /dev/null
-
-    # Change to the newly created directory
-    cd "$dirname" &> /dev/null
-
-    echo "Installing to: ($dirname) ..."
+    trimmed="${$dirname#"${$dirname%%[![:space:]]*}"}"
+    if trimmed==""; then
+      echo "Installing to current directory..."
+      dirname = "."
+    else
+      echo "Installing to: ($dirname) ..."
+    fi
 else
-    echo "Installing to current directory..."
+    echo "Installing to MeshMVC..."
 fi
+
+# Create the directory and change to the newly created directory
+mkdir "$dirname" &> /dev/null
+cd "$dirname" &> /dev/null
 
 echo "Verifying dependencies..."
 
