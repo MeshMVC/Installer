@@ -5,9 +5,10 @@ set -e
 echo "Welcome to MeshMVC installer!"
 
 echo "Please enter install location"
+echo "Press [space] and [enter] to install in current directory"
 
 # Prompt the user for a directory name
-read -p "Enter directory name (default: current directory): " dirname
+read -p "Enter directory name (default: MeshMVC): " dirname
 
 # Check if the dirname is not empty
 if [[ -n "$dirname" ]]; then
@@ -121,21 +122,14 @@ if ! command -v docker-compose &> /dev/null; then
     fi
 fi
 
-# Check if Docker can be run
-docker_run_status=$(docker run hello-world 2>&1)
-
-if [[ $docker_run_status == *"permission denied"* ]]; then
-  echo "Docker can't be run!"
-  echo "Ensuring filesystem can read docker files..."
-  sudo chown "$USER":"$USER" /home/"$USER"/.docker -R &> /dev/null
-  sudo chmod g+rwx "$HOME/.docker" -R &> /dev/null
-  sudo chmod 666 /var/run/docker.sock &> /dev/null
-  echo "Restarting docker daemon..."
-  sudo systemctl enable docker &> /dev/null
-  sudo systemctl restart docker &> /dev/null
-else
-  echo "Docker is already running and accessible."
-fi
+echo "Ensuring filesystem can read docker files..."
+#sudo chown "$USER":"$USER" /home/"$USER"/.docker -R &> /dev/null
+sudo chmod g+rwx "$HOME/.docker" -R &> /dev/null
+sudo chmod 666 /var/run/docker.sock &> /dev/null
+echo "Restarting docker daemon..."
+sudo systemctl enable docker &> /dev/null
+sudo systemctl stop docker &> /dev/null
+sudo systemctl start docker &> /dev/null
 
 echo "Downloading MeshMVC..."
 
