@@ -146,8 +146,10 @@ tar -xf MeshMVC-latest.tar --strip-components=1 &> /dev/null
 rm MeshMVC-latest.tar
 
 echo "Running server with docker..."
+docker compose down
 docker compose up -d
 
 echo "Ready!"
 echo "-> To stop the server, please run the command 'docker compose down' inside your project directory."
 echo "-> Don't forget your project is within $dirname."
+echo "-> If you forgot to stop all containers before running this new one, you can run: 'docker kill \$(docker ps -q)' to kill all container."
