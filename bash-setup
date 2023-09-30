@@ -129,7 +129,7 @@ fi
 
 # Check if Docker can be run
 docker_run_status=$(docker run hello-world 2>&1)
-if [[ $docker_run_status == "permission denied" ]]; then
+if [[ $docker_run_status == *"permission denied"* ]]; then
   echo "Ensuring filesystem can read docker files..."
   sudo chmod 666 /var/run/docker.sock &> /dev/null
   echo "Restarting docker daemon..."
@@ -146,7 +146,6 @@ tar -xf MeshMVC-latest.tar --strip-components=1 &> /dev/null
 rm MeshMVC-latest.tar
 
 echo "Running server with docker..."
-docker compose down
 docker compose up -d
 
 echo "Ready!"
