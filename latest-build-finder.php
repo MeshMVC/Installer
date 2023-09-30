@@ -25,7 +25,7 @@ $data = json_decode($response, true);
 // For example, to access the first tag name:
 $releaseTag = $data[0]['name'];
 
-if (isset($_REQUEST["win"])) {
+if (isset($_REQUEST["w"])) {
     header("Location: https://raw.githubusercontent.com/MeshMVC/Installer/".$releaseTag."/ps-setup");
 } else {
     header("Location: https://raw.githubusercontent.com/MeshMVC/Installer/".$releaseTag."/bash-setup");

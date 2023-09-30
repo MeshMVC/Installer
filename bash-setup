@@ -121,6 +121,22 @@ if ! command -v docker-compose &> /dev/null; then
     fi
 fi
 
+# Check if Docker can be run
+docker_run_status=$(docker run hello-world 2>&1)
+
+if [[ $docker_run_status == *"permission denied"* ]]; then
+  echo "Docker can't be run!"
+  echo "Ensuring filesystem can read docker files..."
+  sudo chown "$USER":"$USER" /home/"$USER"/.docker -R &> /dev/null
+  sudo chmod g+rwx "$HOME/.docker" -R &> /dev/null
+  sudo chmod 666 /var/run/docker.sock &> /dev/null
+  echo "Restarting docker daemon..."
+  sudo systemctl enable docker &> /dev/null
+  sudo systemctl restart docker &> /dev/null
+else
+  echo "Docker is already running and accessible."
+fi
+
 echo "Downloading MeshMVC..."
 
 curl -sL $(curl -sL https://api.github.com/repos/MeshMVC/MeshMVC/tags | jq -r '.[0].tarball_url') -o MeshMVC-latest.tar
